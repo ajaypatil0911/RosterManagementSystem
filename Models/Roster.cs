@@ -8,7 +8,7 @@
 
         public int Year { get; set; }
 
-        //public string Status { get; set; } = "Draft";
+        public string Status { get; set; } = "Draft";
 
         public DateTime GeneratedOn { get; set; } = DateTime.UtcNow;
 
