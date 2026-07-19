@@ -1,0 +1,52 @@
+﻿using System.Net;
+using System.Text.Json;
+
+namespace RosterManagementSystem.Middleware
+{
+    public class ExceptionMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public ExceptionMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            try
+            {
+                await _next(context);
+            }
+            //catch (Exception)
+            //{
+            //    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+            //    context.Response.ContentType = "application/json";
+
+            //    var response = new
+            //    {
+            //        StatusCode = context.Response.StatusCode,
+            //        Message = "An unexpected error occurred."
+            //    };
+
+            //    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            //}
+            catch (Exception ex)
+            {
+                context.Response.StatusCode = 500;
+                context.Response.ContentType = "application/json";
+
+                var response = new
+                {
+                    StatusCode = 500,
+                    Message = ex.Message,
+                    Exception = ex.GetType().Name
+                };
+
+                await context.Response.WriteAsync(
+                    System.Text.Json.JsonSerializer.Serialize(response));
+            }
+        }
+    }
+}
